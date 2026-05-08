@@ -288,6 +288,8 @@ process.on('uncaughtException', (err) => {
 /**
  * Bootstrap Application
  */
-start();
+if (process.env.NODE_ENV !== 'test') {
+  start();
+}
 
 export { app, httpServer, io };
