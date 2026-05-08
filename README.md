@@ -1,54 +1,59 @@
-# CollabCode — Real-Time Collaborative Code Editor
+# CollabCode
 
-A production-grade, real-time collaborative code editor (Google Docs for Code) built with React, Node.js, Monaco Editor, Yjs CRDT, Socket.io, and MongoDB.
+A production-ready, real-time collaborative code editor — think Google Docs, but for code. Built with React, Node.js, Monaco Editor, Yjs, Socket.io, and MongoDB.
 
-## Features
+---
 
-- **Monaco Editor** — VS Code-grade editing with syntax highlighting, IntelliSense, multi-language support
-- **Real-Time Collaboration** — CRDT-based (Yjs) conflict-free editing with WebSocket sync
-- **Live Presence** — See active users, colored cursors, and selections in real-time
-- **Room-Based** — Each document is a unique room; share the room ID to collaborate
-- **Code Execution** — Run JS, Python, C++ in sandboxed Docker containers
-- **Version History** — Snapshot versions, browse history, rollback to any point
-- **Auto-Save** — Documents persist automatically with debounced saves
-- **Authentication** — JWT-based auth with bcrypt password hashing
-- **Scalable** — Redis Pub/Sub for multi-instance sync, stateless backend
-- **Observability** — Pino structured logging, Prometheus metrics, health checks
-- **Deployment** — Docker Compose for local dev, Kubernetes manifests for production
+## What it does
 
-## Tech Stack
+- **VS Code-quality editing** — Monaco Editor brings full syntax highlighting, IntelliSense, and multi-language support right in the browser.
+- **True real-time collaboration** — Multiple people can edit the same file simultaneously. Conflicts are resolved automatically using Yjs CRDTs, so you never step on each other's work.
+- **Live presence** — See who's in the document, where their cursor is, and what they've selected — all in real time with unique color coding per user.
+- **Room-based sharing** — Every document gets a unique room ID. Just share the link to start collaborating.
+- **Run code in the browser** — Execute JavaScript, Python, or C++ directly from the editor. Code runs inside sandboxed Docker containers, so it's isolated and safe.
+- **Version history** — Take snapshots at any point, browse the full history, and roll back to any previous version.
+- **Auto-save** — Documents save themselves in the background. No Ctrl+S needed.
+- **Secure by default** — JWT authentication with bcrypt password hashing.
+- **Built to scale** — Redis Pub/Sub keeps multiple server instances in sync. The backend is fully stateless.
+- **Observable** — Structured logging with Pino, Prometheus metrics, and health check endpoints out of the box.
+- **Deployable anywhere** — Docker Compose for local development, Kubernetes manifests for production.
 
-| Layer | Technology |
-|-------|-----------|
+---
+
+## Tech stack
+
+| Layer | What's used |
+|---|---|
 | Frontend | React 18, TypeScript, Monaco Editor, Tailwind CSS, Framer Motion, Zustand |
 | Backend | Node.js, Express, Socket.io, TypeScript |
-| Sync Engine | Yjs (CRDT) over WebSockets |
-| Database | MongoDB (Mongoose ODM) |
-| Cache/Pub-Sub | Redis (ioredis) |
-| Code Execution | Docker containers (dockerode) |
+| Sync engine | Yjs (CRDT) over WebSockets |
+| Database | MongoDB (Mongoose) |
+| Cache / pub-sub | Redis (ioredis) |
+| Code execution | Docker containers via dockerode |
 | Auth | JWT + bcrypt |
-| Observability | Pino logger, prom-client (Prometheus) |
+| Observability | Pino logger, prom-client |
 | CI/CD | GitHub Actions |
 | Deployment | Docker, Docker Compose, Kubernetes |
 
-## Quick Start
+---
 
-### Prerequisites
+## Getting started
+
+### What you need
 
 - Node.js 20+
 - MongoDB (local or Docker)
 - Redis (local or Docker)
-- Docker (for code execution feature)
+- Docker (for the code execution feature)
 
-### 1. Start infrastructure
+### Step 1 — Start the infrastructure
 
 ```bash
-# Start MongoDB and Redis with Docker
 docker run -d --name mongo -p 27017:27017 mongo:7
 docker run -d --name redis -p 6379:6379 redis:7-alpine
 ```
 
-### 2. Setup server
+### Step 2 — Start the server
 
 ```bash
 cd server
@@ -57,7 +62,7 @@ npm install
 npm run dev
 ```
 
-### 3. Setup client
+### Step 3 — Start the client
 
 ```bash
 cd client
@@ -65,163 +70,150 @@ npm install
 npm run dev
 ```
 
-### 4. Open browser
+### Step 4 — Open the app
 
-Navigate to `http://localhost:5173`
+Go to `http://localhost:5173` in your browser.
 
-### Full Stack with Docker Compose
+### Prefer Docker Compose?
 
 ```bash
 docker-compose up --build
 ```
 
-Open `http://localhost` — the entire stack runs in containers.
+Then open `http://localhost`. The whole stack runs in containers.
 
-## Project Structure
+---
+
+## Project structure
 
 ```
-├── client/                 # React frontend
-│   ├── src/
-│   │   ├── components/     # CodeEditor, UserPresence, VersionPanel, OutputPanel
-│   │   ├── hooks/          # useCollaboration (Yjs + Socket.io)
-│   │   ├── lib/            # Zustand stores
-│   │   ├── pages/          # AuthPage, DashboardPage, EditorPage
-│   │   ├── services/       # API client, Socket.io client
-│   │   ├── styles/         # Tailwind CSS
-│   │   └── types/          # TypeScript interfaces
-│   └── vite.config.ts
-├── server/                 # Node.js backend
-│   ├── src/
-│   │   ├── config/         # Environment config
-│   │   ├── middleware/      # JWT auth middleware
-│   │   ├── models/         # Mongoose models (User, Document, Version)
-│   │   ├── routes/         # REST API routes
-│   │   ├── services/       # Auth, Document, Collaboration, Execution, Redis, Metrics
-│   │   ├── types/          # Shared TypeScript types
-│   │   └── utils/          # Logger, load test
-│   └── tsconfig.json
+├── client/
+│   └── src/
+│       ├── components/     # CodeEditor, UserPresence, VersionPanel, OutputPanel
+│       ├── hooks/          # useCollaboration — Yjs + Socket.io integration
+│       ├── lib/            # Zustand stores
+│       ├── pages/          # AuthPage, DashboardPage, EditorPage
+│       ├── services/       # API client, Socket.io client
+│       ├── styles/         # Tailwind CSS
+│       └── types/          # TypeScript interfaces
+├── server/
+│   └── src/
+│       ├── config/         # Environment config
+│       ├── middleware/      # JWT auth middleware
+│       ├── models/         # Mongoose models — User, Document, Version
+│       ├── routes/         # REST API routes
+│       ├── services/       # Auth, Document, Collaboration, Execution, Redis, Metrics
+│       ├── types/          # Shared TypeScript types
+│       └── utils/          # Logger, load test
 ├── infra/
 │   ├── docker/             # Dockerfiles, nginx config
-│   └── kubernetes/         # K8s manifests (deployments, services, HPA, ingress)
+│   └── kubernetes/         # Deployments, services, HPA, ingress
 ├── docs/                   # Architecture documentation
-├── docker-compose.yml      # Local full-stack deployment
+├── docker-compose.yml
 └── .github/workflows/      # CI/CD pipeline
 ```
 
-## API Reference
+---
+
+## API reference
 
 ### Auth
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Login and get JWT token |
+| Method | Endpoint | What it does |
+|---|---|---|
+| POST | `/api/auth/register` | Create a new account |
+| POST | `/api/auth/login` | Log in and receive a JWT |
 
 ### Documents
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
+| Method | Endpoint | What it does |
+|---|---|---|
 | POST | `/api/documents` | Create a new document |
-| GET | `/api/documents/mine` | List user's documents |
-| GET | `/api/documents/:id` | Get document by ID |
-| PATCH | `/api/documents/:id` | Update document title/language |
-| GET | `/api/documents/:id/versions` | Get version history |
-| POST | `/api/documents/:id/versions` | Create a version snapshot |
-| POST | `/api/documents/:id/restore/:version` | Restore to a version |
+| GET | `/api/documents/mine` | List your documents |
+| GET | `/api/documents/:id` | Fetch a document by ID |
+| PATCH | `/api/documents/:id` | Update the title or language |
+| GET | `/api/documents/:id/versions` | View version history |
+| POST | `/api/documents/:id/versions` | Save a version snapshot |
+| POST | `/api/documents/:id/restore/:version` | Restore to a previous version |
 
-### Code Execution
+### Code execution
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/execute` | Execute code in sandbox |
+| Method | Endpoint | What it does |
+|---|---|---|
+| POST | `/api/execute` | Run code in a sandboxed container |
 
-### WebSocket Events
+### WebSocket events
 
-| Event | Direction | Description |
-|-------|-----------|-------------|
-| `join-room` | Client → Server | Join a collaboration room |
-| `sync-init` | Server → Client | Initial document state + users |
-| `yjs-update` | Bidirectional | CRDT document updates |
-| `cursor-update` | Bidirectional | Live cursor/selection sync |
-| `user-joined` | Server → Client | User joined the room |
-| `user-left` | Server → Client | User left the room |
-| `save-version` | Client → Server | Create version snapshot |
-| `version-saved` | Server → Client | Version saved confirmation |
+| Event | Direction | What it does |
+|---|---|---|
+| `join-room` | Client → Server | Join a collaboration session |
+| `sync-init` | Server → Client | Send the current document state and user list |
+| `yjs-update` | Both ways | Sync CRDT document changes |
+| `cursor-update` | Both ways | Broadcast cursor and selection positions |
+| `user-joined` | Server → Client | Notify when someone joins |
+| `user-left` | Server → Client | Notify when someone leaves |
+| `save-version` | Client → Server | Request a version snapshot |
+| `version-saved` | Server → Client | Confirm the snapshot was saved |
 
-### Health & Metrics
+### Health and metrics
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /health` | Health check (returns uptime, MongoDB status) |
-| `GET /metrics` | Prometheus metrics |
+| Endpoint | What it does |
+|---|---|
+| `GET /health` | Health check — returns uptime and MongoDB status |
+| `GET /metrics` | Prometheus metrics endpoint |
 
-## Architecture
+---
 
-### CRDT vs OT — Why Yjs?
+## How it works under the hood
 
-We chose **CRDT (Conflict-free Replicated Data Types)** via Yjs over OT (Operational Transformation) for these reasons:
+### Why Yjs instead of OT?
 
-| Aspect | CRDT (Yjs) | OT (ShareJS) |
-|--------|-----------|---------------|
-| Server dependency | Works peer-to-peer, server optional | Requires central server for transform |
-| Conflict resolution | Mathematically guaranteed convergence | Complex transform functions, edge cases |
-| Offline support | Built-in — merge on reconnect | Difficult, requires queueing + rebasing |
-| Scalability | Each node independent | Server bottleneck for transforms |
-| Complexity | Higher memory (metadata per character) | Lower memory, higher code complexity |
+Most collaborative editors have historically used Operational Transformation (OT) — the approach behind Google Docs. CollabCode uses CRDTs (Conflict-free Replicated Data Types) via Yjs instead. Here's why:
 
-**Yjs** specifically was chosen because:
-- Mature, well-tested library with Monaco Editor bindings
-- Efficient binary encoding (small wire format)
-- Sub-millisecond local operations
-- Built-in awareness protocol for presence
+| | Yjs (CRDT) | OT (e.g. ShareJS) |
+|---|---|---|
+| Server dependency | Works peer-to-peer; server is optional | Needs a central server to transform operations |
+| Conflict resolution | Mathematically guaranteed to converge | Complex transform functions with edge cases |
+| Offline support | Built-in — changes merge cleanly on reconnect | Hard to implement; requires careful operation queuing |
+| Scalability | Each node is independent | Server becomes a bottleneck |
+| Trade-off | Higher memory (metadata per character) | Less memory, but more code complexity |
 
-### Scaling Strategy
+Yjs specifically was chosen because it has mature Monaco Editor bindings, an efficient binary wire format, sub-millisecond local operations, and a built-in awareness protocol for presence features.
 
-```
-                    ┌─────────────┐
-                    │  Nginx/LB   │
-                    └──────┬──────┘
-               ┌───────────┼───────────┐
-               │           │           │
-          ┌────▼───┐  ┌────▼───┐  ┌────▼───┐
-          │Server 1│  │Server 2│  │Server 3│
-          └────┬───┘  └────┬───┘  └────┬───┘
-               │           │           │
-               └─────┬─────┘─────┬─────┘
-                     │           │
-              ┌──────▼──┐  ┌─────▼────┐
-              │  Redis   │  │ MongoDB  │
-              │ Pub/Sub  │  │  (data)  │
-              └──────────┘  └──────────┘
-```
+### How scaling works
 
-- **Stateless servers** — Yjs document state is loaded from MongoDB on first connection, kept in memory while users are active, persisted on changes
-- **Redis Pub/Sub** — Cross-instance WebSocket message relay so users on different server instances see each other's changes
-- **HPA** — Kubernetes Horizontal Pod Autoscaler scales server pods based on CPU (70% threshold)
-- **Sticky sessions** — Not required; Yjs state syncs via the server's in-memory doc + Redis relay
+When multiple server instances are running, they stay in sync through Redis Pub/Sub. Each server holds active Yjs document state in memory, loaded from MongoDB when the first user joins and persisted on every change. Users on different server instances see each other's edits in real time through the Redis relay — no sticky sessions required.
+
+Kubernetes HPA scales the server pods automatically based on CPU usage (threshold: 70%).
+
+---
 
 ## Testing
 
 ```bash
-# Unit tests (server)
+# Unit tests
 cd server && npm test
 
-# Load test simulation
+# Load testing
 cd server && npx tsx src/utils/load-test.ts
 ```
 
-## Environment Variables
+---
+
+## Environment variables
 
 | Variable | Default | Description |
-|----------|---------|-------------|
-| `PORT` | 3001 | Server port |
-| `MONGODB_URI` | mongodb://localhost:27017/collab-editor | MongoDB connection string |
-| `REDIS_URL` | redis://localhost:6379 | Redis connection string |
-| `JWT_SECRET` | dev-secret-change-in-prod | JWT signing secret |
-| `JWT_EXPIRES_IN` | 7d | Token expiration |
-| `CORS_ORIGIN` | http://localhost:5173 | Allowed CORS origin |
-| `EXECUTION_TIMEOUT_MS` | 10000 | Code execution timeout |
-| `EXECUTION_MEMORY_MB` | 128 | Code execution memory limit |
+|---|---|---|
+| `PORT` | `3001` | Server port |
+| `MONGODB_URI` | `mongodb://localhost:27017/collab-editor` | MongoDB connection string |
+| `REDIS_URL` | `redis://localhost:6379` | Redis connection string |
+| `JWT_SECRET` | `dev-secret-change-in-prod` | JWT signing secret — **change this in production** |
+| `JWT_EXPIRES_IN` | `7d` | Token expiration window |
+| `CORS_ORIGIN` | `http://localhost:5173` | Allowed CORS origin |
+| `EXECUTION_TIMEOUT_MS` | `10000` | Max time to wait for code execution |
+| `EXECUTION_MEMORY_MB` | `128` | Memory limit per execution container |
+
+---
 
 ## License
 
