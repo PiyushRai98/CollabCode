@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: collab-client
+  namespace: collab-editor
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: collab-client
+  template:
+    metadata:
+      labels:
+        app: collab-client
+    spec:
+      containers:
+        - name: client
+          image: collab-editor-client:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: collab-client
+  namespace: collab-editor
+spec:
+  selector:
+    app: collab-client
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: collab-ingress
+  namespace: collab-editor
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-http-version: "1.1"
+    nginx.ingress.kubernetes.io/websocket-services: collab-server
+spec:
+  rules:
+    - host: collab.example.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: collab-server
+                port:
+                  number: 3001
+          - path: /socket.io
+            pathType: Prefix
+            backend:
+              service:
+                name: collab-server
+                port:
+                  number: 3001
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: collab-client
+                port:
+                  number: 80

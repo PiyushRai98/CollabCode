@@ -1,0 +1,22 @@
+{
+  "name": "realtime-code-editor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Real-time collaborative code editor with CRDT sync, live cursors, and sandboxed execution",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build": "concurrently \"npm run build:server\" \"npm run build:client\"",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
+    "test": "concurrently \"npm run test:server\" \"npm run test:client\"",
+    "test:server": "cd server && npm test",
+    "test:client": "cd client && npm test",
+    "lint": "concurrently \"cd server && npm run lint\" \"cd client && npm run lint\"",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

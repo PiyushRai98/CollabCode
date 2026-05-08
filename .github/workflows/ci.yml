@@ -1,0 +1,45 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-server:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+      - run: cd server && npm ci
+      - run: cd server && npm test
+      - run: cd server && npm run build
+
+  test-client:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+      - run: cd client && npm ci
+      - run: cd client && npm test
+      - run: cd client && npm run build
+
+  docker-build:
+    needs: [test-server, test-client]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build server image
+        run: docker build -f infra/docker/Dockerfile.server -t collab-editor-server:${{ github.sha }} .
+      - name: Build client image
+        run: docker build -f infra/docker/Dockerfile.client -t collab-editor-client:${{ github.sha }} .
