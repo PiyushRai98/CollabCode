@@ -39,6 +39,7 @@ export default function EditorPage() {
   const [executing, setExecuting] = useState(false);
   const [output, setOutput] = useState<ExecutionResult | null>(null);
   const [copied, setCopied] = useState(false);
+  const codeExecutionEnabled = import.meta.env.VITE_ENABLE_CODE_EXECUTION === 'true';
   const editorRef = useRef<any>(null);
 
   useEffect(() => {
@@ -138,6 +139,7 @@ export default function EditorPage() {
 
           <div className="w-px h-6 bg-editor-border mx-1" />
 
+          {codeExecutionEnabled && (
           <button
             onClick={handleRun}
             disabled={executing}
@@ -146,6 +148,7 @@ export default function EditorPage() {
             {executing ? <Loader2 size={14} className="animate-spin" /> : <Play size={14} />}
             Run
           </button>
+          )}
 
           <button
             onClick={handleSaveVersion}

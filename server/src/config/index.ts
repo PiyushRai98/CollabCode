@@ -15,6 +15,9 @@ export const config = {
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   },
   nodeEnv: process.env.NODE_ENV || 'development',
+  enableCodeExecution:
+    process.env.ENABLE_CODE_EXECUTION === 'true' ||
+    (process.env.NODE_ENV !== 'production' && process.env.ENABLE_CODE_EXECUTION !== 'false'),
   docker: {
     socket: process.env.DOCKER_SOCKET || '/var/run/docker.sock',
     timeoutMs: parseInt(process.env.EXECUTION_TIMEOUT_MS || '10000', 10),

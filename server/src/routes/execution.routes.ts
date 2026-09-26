@@ -1,12 +1,20 @@
 import { Router, Request, Response } from 'express';
 import { authenticate } from '../middleware/auth';
 import { executeCode } from '../services/execution.service';
+import { config } from '../config';
 
 const router = Router();
 
 router.use(authenticate);
 
 router.post('/', async (req: Request, res: Response) => {
+  if (!config.enableCodeExecution) {
+    res.status(503).json({
+      error: 'Code execution is disabled in this deployment. Use a dedicated sandbox/execution service.',
+    });
+    return;
+  }
+
   try {
     const { code, language, stdin } = req.body;
     if (!code || !language) {

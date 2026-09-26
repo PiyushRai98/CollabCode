@@ -227,7 +227,7 @@ async function start() {
     /**
      * Start HTTP Server
      */
-    httpServer.listen(config.port, () => {
+    httpServer.listen(config.port, '0.0.0.0', () => {
       logger.info(
         { port: config.port },
         'Server listening'
